@@ -10,6 +10,7 @@
 'use strict';
 var generators = require('yeoman-generator'),
     _ = require('lodash'),
+    fs = require('fs'),
     chalk = require('chalk'),
     yosay = require('yosay');
 
@@ -102,7 +103,7 @@ module.exports = generators.Base.extend({
                 this.includeAngularLocalStorage = _.includes(answers.jslibs, 'angularLocalStorage');
                 this.includeAngularTranslate = _.includes(answers.jslibs, 'angularTranslate');
                 this.includeAngularDatatable = _.includes(answers.jslibs, 'angularDatatable');
-                this.installPackages = _.includes(answers.installPackages);
+                this.installPackages = answers.installPackages;
                 done();
             }.bind(this));
     },
@@ -146,14 +147,13 @@ module.exports = generators.Base.extend({
             bowerJson.dependencies['angular'] = '~1.4.6';
             bowerJson.dependencies['angular-bootstrap'] = '~0.13.4';
             bowerJson.dependencies['angular-ui-router'] = '~0.2.15';
-            bowerJson.dependencies['bootstrap'] = '~3.3.5';
+            bowerJson.dependencies['bootstrap-css-only'] = '~3.3.5';
             if (this.includeLodash) {
                 bowerJson.dependencies['lodash'] = '~3.10.1';
             }
             if (this.includeMoment) {
                 bowerJson.dependencies['moment'] = '~2.10.6';
             }
-            //if (this.options.includeutils){
             if (this.includeAngularUIUtils) {
                 bowerJson.dependencies['angular-ui-utils'] = '~3.0.0';
             }
@@ -193,13 +193,25 @@ module.exports = generators.Base.extend({
                 });
             this.fs.copyTpl(
                 this.templatePath('app/home/_home.controller.js'),
-                this.destinationPath('src/client/app/home/home.controller.js'),
+                this.destinationPath('src/client/app/features/home/home.controller.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
                 this.templatePath('app/about/_about.controller.js'),
-                this.destinationPath('src/client/app/about/about.controller.js'),
+                this.destinationPath('src/client/app/features/about/about.controller.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/home/_routes.js'),
+                this.destinationPath('src/client/app/features/home/routes.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/about/_routes.js'),
+                this.destinationPath('src/client/app/features/about/routes.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
@@ -209,23 +221,21 @@ module.exports = generators.Base.extend({
         },
 
         html: function () {
+
             this.fs.copyTpl(
                 this.templatePath('_index.html'),
                 this.destinationPath('src/client/index.html'),
                 {
                     appname: _.startCase(this.appname),
-                    ngapp: this.config.get('ngappname')
-                }
-                );
-            this.fs.copy(
-                this.templatePath('app/layout/_shell.html'),
-                this.destinationPath('src/client/app/layout/shell.html'));
+                    ngapp: this.config.get('ngappname'),
+                });
+
             this.fs.copy(
                 this.templatePath('app/home/_home.html'),
-                this.destinationPath('src/client/app/home/home.html'));
+                this.destinationPath('src/client/app/features/home/home.html'));
             this.fs.copy(
                 this.templatePath('app/about/_about.html'),
-                this.destinationPath('src/client/app/about/about.html'));
+                this.destinationPath('src/client/app/features/about/about.html'));
         }
     },
     conflicts: function () {
@@ -234,7 +244,7 @@ module.exports = generators.Base.extend({
     install: function () {
         //this.bowerInstall();
         //this.npmInstall();
-        this.log('npm      ------------',this.installPackages)
+        this.log('npm      ------------', this.installPackages)
         if (this.installPackages === 'Yes') {
             this.installDependencies({
                 skipInstall: this.options['skip-install']
@@ -242,6 +252,18 @@ module.exports = generators.Base.extend({
         }
     },
     end: function () {
-        this.log('end')
+        var featuresName = []
+        var featureFolder = process.cwd() + '/src/client/app/features/';
+        if (fs.existsSync(featureFolder)) {
+            fs.readdirSync(featureFolder).forEach(function (folder) {
+                featuresName.push(folder)
+            })
+        }
+        this.fs.copyTpl(
+            this.templatePath('app/layout/_shell.html'),
+            this.destinationPath('src/client/app/layout/shell.html'),
+            {
+                links: featuresName
+            });
     }
 });

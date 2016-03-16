@@ -1,6 +1,7 @@
 'use strict';
 var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
+var plugins = require('gulp-load-plugins')({ lazy: true });
+var browserSync = require('browser-sync');
 var config = require('./gulp.config')();
 var wiredep = require('wiredep');
 var livereload = require('gulp-livereload');
@@ -41,7 +42,7 @@ gulp.task('injectjs', function(){
 
 });
 
-gulp.task('serve',  function () {
+gulp.task('default',  function () {
    // require('opn')('http://localhost:9000');
     var isDev=true
      var nodeOptions = {
@@ -65,7 +66,7 @@ gulp.task('serve',  function () {
         })
         .on('start', function () {
             log('nodemon started');
-            //startBrowserSync(isDev);
+            startBrowserSync(isDev);
         })
         .on('crash', function (event) {
             log('nodemon crashed: script crashed for some reason');
@@ -97,3 +98,42 @@ gulp.task('wiredep', function () {
         .pipe(plugins.inject(gulp.src(config.js), { relative: true }))
         .pipe(gulp.dest('src/client'));
 });
+
+
+function startBrowserSync(isDev) {
+    if (browserSync.active) {
+        return;
+    }
+    log('Starting browser-sync on port ' + config.port);
+    var options = {
+        proxy: 'localhost:' + config.port,
+        port: 9001,
+        files: [config.js],
+        ghostMode: {
+            clicks: true,
+            location: false,
+            forms: true,
+            scroll: true
+        },
+        injectChanges: true,
+        logFileChanges: true,
+        logLevel: 'debug',
+        logPrefix: 'gulp-patterns',
+        notify: true,
+        reloadDelay: 1000
+    };
+    browserSync(options);
+}
+
+
+function log(msg) {
+    if (typeof (msg) === 'object') {
+        for (var item in msg) {
+            if (msg.hasOwnProperty(item)) {
+                plugins.util.log(plugins.util.colors.blue('*** ' + msg[item] + ' ***'));
+            }
+        }
+    } else {
+       plugins.util.log(plugins.util.colors.blue('*** ' + msg + ' ***'));
+    }
+}
