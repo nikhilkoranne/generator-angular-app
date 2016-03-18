@@ -11,6 +11,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+require('./auth/auth')(app);
+
 app.get('/', function (req, res) {
     res.render('index.html');
 });

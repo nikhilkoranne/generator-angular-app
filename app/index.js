@@ -45,6 +45,12 @@ module.exports = generators.Base.extend({
                 //store: true
             },
             {
+                type: 'list',
+                name: 'backendServer',
+                message: 'Which Backend server would you like include? ',
+                choices: ['NodeJS', 'ASP.NET', 'Nothing']
+            },
+            {
                 type: 'checkbox',
                 name: 'jslibs',
                 message: 'Which JS libraries would you like to include?',
@@ -97,14 +103,9 @@ module.exports = generators.Base.extend({
                 this.includeAngularTranslate = _.includes(answers.jslibs, 'angularTranslate');
                 this.includeAngularDatatable = _.includes(answers.jslibs, 'angularDatatable');
                 this.installPackages = answers.installPackages;
+                this.backendServer = answers.backendServer;
                 done();
             }.bind(this));
-    },
-    configuring: function () {
-        this.log('configuring')
-    },
-    default: function () {
-        this.log('default')
     },
     writing: {
         gulpfile: function () {
@@ -221,14 +222,22 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
-                this.templatePath('_server.js'),
-                this.destinationPath('src/server/server.js'));
-            this.fs.copyTpl(
-                this.templatePath('server/_auth.js'),
-                this.destinationPath('src/server/auth/auth.js'));
-            this.fs.copyTpl(
-                this.templatePath('server/_utils.js'),
-                this.destinationPath('src/server/utils/utils.js'));
+                this.templatePath('app/_authService.js'),
+                this.destinationPath('src/client/app/services/auth/authService.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            if (this.backendServer === 'NodeJS') {
+                this.fs.copyTpl(
+                    this.templatePath('_server.js'),
+                    this.destinationPath('src/server/server.js'));
+                this.fs.copyTpl(
+                    this.templatePath('server/_auth.js'),
+                    this.destinationPath('src/server/auth/auth.js'));
+                this.fs.copyTpl(
+                    this.templatePath('server/_utils.js'),
+                    this.destinationPath('src/server/utils/utils.js'));
+            }
         },
 
         html: function () {
@@ -257,7 +266,6 @@ module.exports = generators.Base.extend({
     install: function () {
         //this.bowerInstall();
         //this.npmInstall();
-        this.log('npm      ------------', this.installPackages)
         if (this.installPackages === 'Yes') {
             this.installDependencies({
                 skipInstall: this.options['skip-install']
@@ -269,7 +277,9 @@ module.exports = generators.Base.extend({
         var featureFolder = process.cwd() + '/src/client/app/features/';
         if (fs.existsSync(featureFolder)) {
             fs.readdirSync(featureFolder).forEach(function (folder) {
-                featuresName.push(folder)
+                if (folder != 'login') {
+                    featuresName.push(folder)
+                }
             })
         }
         this.fs.copyTpl(

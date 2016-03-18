@@ -1,9 +1,9 @@
-var utils = require('./../Utils/utils');
+var utils = require('./../utils/utils');
 
 var authenticate = function (req, res) {
-    var userName = req.user.userName
-    var password = req.user.password
-    if (userName == 'admin' && password == 'admin') {
+    var userName = req.body.userName
+    var password = req.body.password
+    if (userName === 'admin' && password === 'admin') {
         var token = utils.CreateJWT(req.user);
         res.send({ token: token });
     } else {
@@ -11,5 +11,5 @@ var authenticate = function (req, res) {
     }
 }
 module.exports = function (app) {
-    app.post('/auth/authenticate', authenticate);
+    app.post('/api/auth/authenticate', authenticate);
 }

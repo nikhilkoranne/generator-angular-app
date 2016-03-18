@@ -16,18 +16,19 @@
             <div class="collapse navbar-collapse" ng-class="{'in': !navCollapsed}">
                 <ul class="nav navbar-nav">
                     <% for(var i=0; i<links.length; i++) {%>
-                        <li>
+                        <li ng-if="vm.isAuthenticated">
                             <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="<%= links[i] %>">
                                 <%= links[i] %>
                             </a>
                         </li>
                         <% } %>
-                            <!--<li>
-                                <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="home">
-                                    <%= links %>
-                                </a>
-                            </li>
-                            <li><a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="about">About</a></li>-->
+                </ul>
+                <ul class="nav navbar-nav pull-right">
+                    <li ng-if="vm.isAuthenticated">
+                        <a href="" data-toggle="collapse" data-target=".navbar-collapse" ng-click="vm.logout()">
+                            Logout
+                        </a>
+                    </li>
                 </ul>
             </div>
 

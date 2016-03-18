@@ -9,7 +9,7 @@ var livereload = require('gulp-livereload');
 var paths = {
     appScripts: 'src/app/**/*.js'
 };
-
+var port = 8082;
 gulp.task('scripts', function () {
     return gulp.src([paths.appScripts])
         .pipe(plugins.jshint())
@@ -33,36 +33,36 @@ gulp.task('watch', ['serve'], function () {
     gulp.watch(paths.appScripts, ['scripts']);
 });
 
-gulp.task('injectjs', function(){
+gulp.task('injectjs', function () {
     var target = gulp.src(config.index);
     var sources = gulp.src([paths.appScripts]);
 
-    return target.pipe(plugins.inject(sources, {relative: true}))
+    return target.pipe(plugins.inject(sources, { relative: true }))
         .pipe(gulp.dest('./src'));
 
 });
 
-gulp.task('default',  function () {
-   // require('opn')('http://localhost:9000');
-    var isDev=true
-     var nodeOptions = {
+gulp.task('default', function () {
+    // require('opn')('http://localhost:9000');
+    var isDev = true
+    var nodeOptions = {
         script: config.nodeServer,
         delayTime: 1,
         env: {
-            'PORT': config.port,
+            'PORT': port,
             'NODE_ENV': isDev ? 'development' : 'production'
         },
         watch: [config.server]
     };
 
     return plugins.nodemon(nodeOptions)
-        .on('restart', ['styles'], function (event) {
+        .on('restart',  function (event) {
             log('nodemon restarted');
             log('files changed on restart:\n' + event);
-            // setTimeout(function () {
-            //     browserSync.notify('reloading now ...');
-            //     browserSync.reload({ stream: false });
-            // }, config.browserReloadDelay);
+            setTimeout(function () {
+                browserSync.notify('reloading now ...');
+                browserSync.reload({ stream: false });
+            }, 1000);
         })
         .on('start', function () {
             log('nodemon started');
@@ -78,14 +78,14 @@ gulp.task('default',  function () {
 });
 
 gulp.task('connect', function () {
-//     var app = connect()
-//         .use(serveStatic('src'));
-// 
-//     require('http').createServer(app)
-//         .listen(9000)
-//         .on('listening', function () {
-//             console.log('Started connect web server on http://localhost:9000');
-//         });
+    //     var app = connect()
+    //         .use(serveStatic('src'));
+    // 
+    //     require('http').createServer(app)
+    //         .listen(9000)
+    //         .on('listening', function () {
+    //             console.log('Started connect web server on http://localhost:9000');
+    //         });
 });
 
 gulp.task('wiredep', function () {
@@ -104,9 +104,9 @@ function startBrowserSync(isDev) {
     if (browserSync.active) {
         return;
     }
-    log('Starting browser-sync on port ' + config.port);
+    log('Starting browser-sync on port ' + port);
     var options = {
-        proxy: 'localhost:' + config.port,
+        proxy: 'localhost:' + port,
         port: 9001,
         files: [config.js],
         ghostMode: {
@@ -134,6 +134,6 @@ function log(msg) {
             }
         }
     } else {
-       plugins.util.log(plugins.util.colors.blue('*** ' + msg + ' ***'));
+        plugins.util.log(plugins.util.colors.blue('*** ' + msg + ' ***'));
     }
 }

@@ -25,11 +25,21 @@ module.exports = generators.Base.extend({
                 name: 'routeUrl',
                 message: 'Enter a URL for the route (leave it blank to inherit it from Feature)?',
                 // default: this.featureName
+            }, {
+                when: function (response) {
+                    if (response.routeConfirmation === 'Yes')
+                        return response;
+                },
+                type: 'list',
+                name: 'includeLink',
+                message: 'Would you like to include hyperlink for this feature in menubar?',
+                choices: ['Yes', 'No']
             }], function (answers) {
                 this.routeConfirmation = answers.routeConfirmation;
                 this.name = answers.featureName;
                 this.routeName = this.name;
                 this.routeUrl = answers.routeUrl || this.name;
+                this.includeLink = answers.includeLink;
                 done();
             }.bind(this));
     },
@@ -65,15 +75,16 @@ module.exports = generators.Base.extend({
         }
     },
     end: function () {
-        if (this.routeConfirmation === 'Yes') {
+        if (this.routeConfirmation === 'Yes' &&  this.includeLink === 'Yes') {
             var featuresName = []
             var featureFolder = process.cwd() + '/src/client/app/features/';
             if (fs.existsSync(featureFolder)) {
                 fs.readdirSync(featureFolder).forEach(function (folder) {
-                    featuresName.push(folder)
+                    if (folder != 'login') {
+                        featuresName.push(folder)
+                    }
                 })
             }
-            console.log(featuresName);
             this.fs.copyTpl(
                 this.templatePath('_shell.html'),
                 this.destinationPath('src/client/app/layout/shell.html'),

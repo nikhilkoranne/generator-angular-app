@@ -14,6 +14,6 @@
                 controller: 'HomeCtrl',
                 controllerAs: 'vm',
             });
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise('/login');
     }
 })();

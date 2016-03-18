@@ -3,14 +3,24 @@
 
     angular.module('<%= ngapp %>').controller('ShellCtrl', ShellCtrl);
 
-    ShellCtrl.$inject = ['$rootScope'];
+    ShellCtrl.$inject = ['$rootScope', '$location'];
 
-    function ShellCtrl($rootScope) {
+    function ShellCtrl($rootScope, $location) {
         /* jshint validthis:true */
         var vm = this;
-        vm.isAuthenticated = false
+        $rootScope.isAuthenticated = vm.isAuthenticated = false;
+        vm.logout = logout;
         activate();
 
-        function activate() { }
+        function activate() {
+        }
+
+        function logout() {
+            $rootScope.isAuthenticated = vm.isAuthenticated = false;
+            $location.path('/login');
+        }
+        $rootScope.$on('loggedInSuccessfull', function () {
+            $rootScope.isAuthenticated = vm.isAuthenticated = true;
+        })
     }
 })();
