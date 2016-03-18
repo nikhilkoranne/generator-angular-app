@@ -50,7 +50,6 @@ module.exports = generators.Base.extend({
             {
                 name: _.upperFirst(this.name),
                 appName: this.config.get('ngappname')
-            }
-            );
+            });
     }
 });

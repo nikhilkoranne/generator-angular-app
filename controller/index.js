@@ -52,5 +52,6 @@ module.exports = generators.Base.extend({
                 appName: this.config.get('ngappname')
             }
             );
+        this.spawnCommand('gulp', ['wiredep'])
     }
 });

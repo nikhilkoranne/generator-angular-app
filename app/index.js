@@ -65,11 +65,6 @@ module.exports = generators.Base.extend({
                         checked: true
                     },
                     {
-                        name: 'JQuery',
-                        value: 'jquery',
-                        checked: true
-                    },
-                    {
                         name: 'angular-local-storage',
                         value: 'angularLocalStorage',
                         checked: true
@@ -91,7 +86,6 @@ module.exports = generators.Base.extend({
                 message: "Run npm install and bower install?",
                 choices: ['Yes', 'No']
             }], function (answers) {
-                this.log(answers);
                 //this.ngappname = answers.ngappname;
                 this.config.set('ngappname', answers.ngappname);
                 this.config.save();
@@ -99,7 +93,6 @@ module.exports = generators.Base.extend({
                 this.includeLodash = _.includes(answers.jslibs, 'lodash');
                 this.includeMoment = _.includes(answers.jslibs, 'momentjs');
                 this.includeAngularUIUtils = _.includes(answers.jslibs, 'angularuiutils');
-                this.includeJQuery = _.includes(answers.jslibs, 'jquery');
                 this.includeAngularLocalStorage = _.includes(answers.jslibs, 'angularLocalStorage');
                 this.includeAngularTranslate = _.includes(answers.jslibs, 'angularTranslate');
                 this.includeAngularDatatable = _.includes(answers.jslibs, 'angularDatatable');
@@ -216,8 +209,26 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
+                this.templatePath('app/login/_login.controller.js'),
+                this.destinationPath('src/client/app/features/login/login.controller.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/login/_routes.js'),
+                this.destinationPath('src/client/app/features/login/routes.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
                 this.templatePath('_server.js'),
                 this.destinationPath('src/server/server.js'));
+            this.fs.copyTpl(
+                this.templatePath('server/_auth.js'),
+                this.destinationPath('src/server/auth/auth.js'));
+            this.fs.copyTpl(
+                this.templatePath('server/_utils.js'),
+                this.destinationPath('src/server/utils/utils.js'));
         },
 
         html: function () {
@@ -236,10 +247,12 @@ module.exports = generators.Base.extend({
             this.fs.copy(
                 this.templatePath('app/about/_about.html'),
                 this.destinationPath('src/client/app/features/about/about.html'));
+            this.fs.copy(
+                this.templatePath('app/login/_login.html'),
+                this.destinationPath('src/client/app/features/login/login.html'));
         }
     },
     conflicts: function () {
-        this.log('conflicts')
     },
     install: function () {
         //this.bowerInstall();
@@ -265,5 +278,6 @@ module.exports = generators.Base.extend({
             {
                 links: featuresName
             });
+        this.spawnCommand('gulp', ['wiredep'])
     }
 });

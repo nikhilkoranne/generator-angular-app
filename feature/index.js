@@ -80,6 +80,7 @@ module.exports = generators.Base.extend({
                 {
                     links: featuresName
                 });
+            this.spawnCommand('gulp', ['wiredep'])
         }
     }
 });

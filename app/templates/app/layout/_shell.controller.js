@@ -8,7 +8,7 @@
     function ShellCtrl($rootScope) {
         /* jshint validthis:true */
         var vm = this;
-
+        vm.isAuthenticated = false
         activate();
 
         function activate() { }
