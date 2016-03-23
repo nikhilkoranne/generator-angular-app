@@ -4,6 +4,38 @@ var generators = require('yeoman-generator'),
     _ = require('lodash');
 
 module.exports = generators.Base.extend({
+    initializing: function () {
+        this.properties = [];
+    },
+    _askForProperty: function (done) {
+        done = done || this.async();
+
+        var prompts = [{
+            type: 'input',
+            name: 'propertyName',
+            message: 'Enter Property Name? ',
+        }, {
+                type: 'list',
+                name: 'propertyType',
+                message: 'Select datatype for the property ',
+                choices: ['String', 'Number']
+            },
+            {
+                type: 'confirm',
+                name: 'askAgain',
+                message: 'Want to add more property?'
+            }];
+        this.prompt(prompts, function (answers) {
+            this.properties.push({ propertyName: answers.propertyName, propertyType: answers.propertyType });
+            if (answers.askAgain) {
+                this._askForProperty(done);
+            } else {
+                this.config.set(this.name + 'Entity', this.properties);
+                done();
+            }
+        }.bind(this));
+
+    },
     askForName: function () {
         var done = this.async();
         this.prompt([
@@ -34,15 +66,24 @@ module.exports = generators.Base.extend({
                 name: 'includeLink',
                 message: 'Would you like to include hyperlink for this feature in menubar?',
                 choices: ['Yes', 'No']
+            }, {
+                type: 'list',
+                name: 'propertyConfirmation',
+                message: 'Would you like to enter properties for this feature ',
+                choices: ['Yes', 'No']
             }], function (answers) {
                 this.routeConfirmation = answers.routeConfirmation;
                 this.name = answers.featureName;
                 this.routeName = this.name;
                 this.routeUrl = answers.routeUrl || this.name;
                 this.includeLink = answers.includeLink;
-                done();
+                if (answers.propertyConfirmation === 'Yes') {
+                    this._askForProperty(done);
+                } else
+                    done();
             }.bind(this));
     },
+
     createdFile: function () {
         var fileNameFragment = _.camelCase(this.name);
 
@@ -51,7 +92,8 @@ module.exports = generators.Base.extend({
             this.destinationPath('src/client/app/features/' + fileNameFragment + '/' + fileNameFragment + '.controller.js'),
             {
                 ctrlName: _.upperFirst(this.name + 'Controller'),
-                appName: this.config.get('ngappname')
+                appName: this.config.get('ngappname'),
+                entity: this.config.get(this.name + 'Entity')
             });
 
         this.fs.copyTpl(
@@ -75,7 +117,7 @@ module.exports = generators.Base.extend({
         }
     },
     end: function () {
-        if (this.routeConfirmation === 'Yes' &&  this.includeLink === 'Yes') {
+        if (this.routeConfirmation === 'Yes' && this.includeLink === 'Yes') {
             var featuresName = []
             var featureFolder = process.cwd() + '/src/client/app/features/';
             if (fs.existsSync(featureFolder)) {

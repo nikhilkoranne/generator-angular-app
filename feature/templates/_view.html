@@ -1,3 +1,26 @@
-<div>
+<div class="container ">
     <h2><%= name %></h2>
+    <div class="row">
+        <form role="form" class="col-md-6">
+            <div class="form-group" ng-repeat="entity in vm.entity">
+                <label>{{entity.propertyName}}:</label>
+                <input type="text" ng-model="vm.formData[entity.propertyName]" class="form-control">
+            </div>
+            <button type="submit" ng-click="vm.onSubmit()" class="btn btn-default">Submit</button>
+        </form>
+        <div class="col-md-6">
+            <table class="table table-bordered" ng-if="vm.list.length>0">
+                <thead>
+                    <tr>
+                        <th ng-repeat="entity in vm.entity">{{entity.propertyName}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in vm.list">
+                        <td ng-repeat="entity in vm.entity">{{item[entity.propertyName]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
