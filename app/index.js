@@ -1,12 +1,3 @@
-// 'use strict';
-// var generators = require('yeoman-generator');
-// 
-// module.exports = generators.Base.extend({
-//     method1: function () {
-//         this.log('Helllooosssssssssssssss')
-//     }
-// });
-
 'use strict';
 var generators = require('yeoman-generator'),
     _ = require('lodash'),
@@ -17,11 +8,6 @@ var generators = require('yeoman-generator'),
 module.exports = generators.Base.extend({
     constructor: function () {
         generators.Base.apply(this, arguments);
-        // this.log('name:',this.name)
-    },
-
-    initializing: function () {
-        this.log('initializing')
     },
     prompting: function () {
         this.log(yosay('Welcome to ' +
@@ -32,17 +18,13 @@ module.exports = generators.Base.extend({
             type: 'input',
             name: 'appname',
             message: ' What would you like to call your application? ',
-            //default: 'app'
             default: this.config.get('appname') || 'app'
-            //store: true
         },
             {
                 type: 'input',
                 name: 'ngappname',
                 message: 'Angular App Name (ng-app)',
-                //default: 'app'
                 default: this.config.get('ngappname') || 'app'
-                //store: true
             },
             {
                 type: 'list',
@@ -92,7 +74,6 @@ module.exports = generators.Base.extend({
                 message: "Run npm install and bower install?",
                 choices: ['Yes', 'No']
             }], function (answers) {
-                //this.ngappname = answers.ngappname;
                 this.config.set('ngappname', answers.ngappname);
                 this.config.save();
 
@@ -119,7 +100,6 @@ module.exports = generators.Base.extend({
         },
 
         git: function () {
-            //this.copy('gitignore', '.gitignore');
             this.composeWith('common', {
                 options: {
                     'skip-messages': true,
@@ -175,7 +155,6 @@ module.exports = generators.Base.extend({
                 this.templatePath('app/_app.js'),
                 this.destinationPath('src/client/app/app.js'),
                 {
-                    //ngapp: this.ngappname
                     ngapp: this.config.get('ngappname')
                 }
                 );
@@ -259,35 +238,18 @@ module.exports = generators.Base.extend({
             this.fs.copy(
                 this.templatePath('app/login/_login.html'),
                 this.destinationPath('src/client/app/features/login/login.html'));
+            this.fs.copyTpl(
+                this.templatePath('app/layout/_shell.html'),
+                this.destinationPath('src/client/app/layout/shell.html'));
         }
     },
     conflicts: function () {
     },
     install: function () {
-        //this.bowerInstall();
-        //this.npmInstall();
         if (this.installPackages === 'Yes') {
             this.installDependencies({
                 skipInstall: this.options['skip-install']
             });
         }
-    },
-    end: function () {
-        var featuresName = []
-        var featureFolder = process.cwd() + '/src/client/app/features/';
-        if (fs.existsSync(featureFolder)) {
-            fs.readdirSync(featureFolder).forEach(function (folder) {
-                if (folder != 'login') {
-                    featuresName.push(folder)
-                }
-            })
-        }
-        this.fs.copyTpl(
-            this.templatePath('app/layout/_shell.html'),
-            this.destinationPath('src/client/app/layout/shell.html'),
-            {
-                links: featuresName
-            });
-        this.spawnCommand('gulp', ['wiredep'])
     }
 });

@@ -14,14 +14,17 @@
                 </a>
             </div>
             <div class="collapse navbar-collapse" ng-class="{'in': !navCollapsed}">
-                <ul class="nav navbar-nav">
-                    <% for(var i=0; i<links.length; i++) {%>
-                        <li ng-if="vm.isAuthenticated">
-                            <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="<%= links[i] %>">
-                                <%= links[i] %>
+                <ul class="nav navbar-nav" ng-if="vm.isAuthenticated">
+                    <li>
+                        <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="home">
+                                Home
                             </a>
-                        </li>
-                        <% } %>
+                    </li>
+                    <li>
+                        <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="about">
+                                About
+                         </a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
                     <li ng-if="vm.isAuthenticated">
@@ -31,10 +34,7 @@
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
-
     <div ui-view id="ng-view" class="container slide-animation admin-content"></div>
-
 </div>
