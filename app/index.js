@@ -171,6 +171,12 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
+                this.templatePath('app/home/_home.config.js'),
+                this.destinationPath('src/client/app/features/home/home.config.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
                 this.templatePath('app/about/_about.controller.js'),
                 this.destinationPath('src/client/app/features/about/about.controller.js'),
                 {
@@ -189,6 +195,12 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
+                this.templatePath('app/about/_about.config.js'),
+                this.destinationPath('src/client/app/features/about/about.config.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
                 this.templatePath('app/login/_login.controller.js'),
                 this.destinationPath('src/client/app/features/login/login.controller.js'),
                 {
@@ -202,7 +214,13 @@ module.exports = generators.Base.extend({
                 });
             this.fs.copyTpl(
                 this.templatePath('app/_authService.js'),
-                this.destinationPath('src/client/app/services/auth/authService.js'),
+                this.destinationPath('src/client/app/services/authService.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/_menuService.js'),
+                this.destinationPath('src/client/app/services/menuService.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });

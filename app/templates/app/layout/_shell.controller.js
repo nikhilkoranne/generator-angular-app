@@ -3,9 +3,9 @@
 
     angular.module('<%= ngapp %>').controller('ShellCtrl', ShellCtrl);
 
-    ShellCtrl.$inject = ['$rootScope', '$location'];
+    ShellCtrl.$inject = ['$rootScope', '$location','MenuService'];
 
-    function ShellCtrl($rootScope, $location) {
+    function ShellCtrl($rootScope, $location, MenuService) {
         /* jshint validthis:true */
         var vm = this;
         $rootScope.isAuthenticated = vm.isAuthenticated = false;
@@ -13,6 +13,7 @@
         activate();
 
         function activate() {
+            vm.menus= MenuService.getMenus();
         }
 
         function logout() {

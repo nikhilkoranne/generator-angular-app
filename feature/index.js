@@ -115,25 +115,18 @@ module.exports = generators.Base.extend({
                     controller: _.upperFirst(this.name + 'Controller')
                 });
         }
+        if (this.routeConfirmation === 'Yes' && this.includeLink === 'Yes') {
+            this.fs.copyTpl(
+                this.templatePath('_config.js'),
+                this.destinationPath('src/client/app/features/' + fileNameFragment + '/' + fileNameFragment + '.config.js'),
+                {
+                    ngapp: this.config.get('ngappname'),
+                    state: this.routeName,
+                    title: _.upperFirst(this.name)
+                });
+        }
     },
     end: function () {
-        if (this.routeConfirmation === 'Yes' && this.includeLink === 'Yes') {
-            var featuresName = []
-            var featureFolder = process.cwd() + '/src/client/app/features/';
-            if (fs.existsSync(featureFolder)) {
-                fs.readdirSync(featureFolder).forEach(function (folder) {
-                    if (folder != 'login') {
-                        featuresName.push(folder)
-                    }
-                })
-            }
-            this.fs.copyTpl(
-                this.templatePath('_shell.html'),
-                this.destinationPath('src/client/app/layout/shell.html'),
-                {
-                    links: featuresName
-                });
-            this.spawnCommand('gulp', ['wiredep'])
-        }
+        this.spawnCommand('gulp', ['wiredep'])
     }
 });

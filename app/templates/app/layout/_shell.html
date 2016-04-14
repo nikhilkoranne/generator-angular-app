@@ -15,14 +15,9 @@
             </div>
             <div class="collapse navbar-collapse" ng-class="{'in': !navCollapsed}">
                 <ul class="nav navbar-nav" ng-if="vm.isAuthenticated">
-                    <li>
-                        <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="home">
-                                Home
-                            </a>
-                    </li>
-                    <li>
-                        <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="about">
-                                About
+                    <li ng-repeat="menu in vm.menus">
+                        <a data-toggle="collapse" data-target=".navbar-collapse" ui-sref="{{menu.state}}">
+                                {{menu.title}}
                          </a>
                     </li>
                 </ul>
