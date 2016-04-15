@@ -5,6 +5,7 @@ var browserSync = require('browser-sync');
 var config = require('./gulp.config')();
 var wiredep = require('wiredep');
 var livereload = require('gulp-livereload');
+var Server = require('karma').Server;
 
 var paths = {
     appScripts: 'src/app/**/*.js'
@@ -16,7 +17,13 @@ gulp.task('scripts', function () {
         .pipe(plugins.jshint.reporter(require('jshint-stylish')))
         .pipe(plugins.size());
 });
-
+gulp.task('unit', function (done) {
+    log('Starting Unit testing');
+    new Server({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }).start();
+});
 gulp.task('watch', ['serve'], function () {
     livereload.listen();
 

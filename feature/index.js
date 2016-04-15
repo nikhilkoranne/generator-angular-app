@@ -102,11 +102,18 @@ module.exports = generators.Base.extend({
             {
                 name: this.name
             });
+        this.fs.copyTpl(
+            this.templatePath('_unit.test.js'),
+            this.destinationPath('src/client/app/features/' + fileNameFragment + '/test/unit/' + fileNameFragment + '.unit.spec.js'),
+            {
+                appName: this.config.get('ngappname'),
+                controllerName: _.upperFirst(this.name + 'Controller'),
+            });
 
         if (this.routeConfirmation === 'Yes') {
             this.fs.copyTpl(
                 this.templatePath('_routes.js'),
-                this.destinationPath('src/client/app/features/' + fileNameFragment + '/' + 'routes.js'),
+                this.destinationPath('src/client/app/features/' + fileNameFragment + '/config/' + 'routes.js'),
                 {
                     ngapp: this.config.get('ngappname'),
                     state: this.routeName,
@@ -118,7 +125,7 @@ module.exports = generators.Base.extend({
         if (this.routeConfirmation === 'Yes' && this.includeLink === 'Yes') {
             this.fs.copyTpl(
                 this.templatePath('_config.js'),
-                this.destinationPath('src/client/app/features/' + fileNameFragment + '/' + fileNameFragment + '.config.js'),
+                this.destinationPath('src/client/app/features/' + fileNameFragment + '/config/' + fileNameFragment + '.config.js'),
                 {
                     ngapp: this.config.get('ngappname'),
                     state: this.routeName,

@@ -1,10 +1,15 @@
-'use strict';
+(function () {
+    'use strict';
+    angular
+        .module('<%= ngapp %>')
+        .run(runBlock);
 
-angular.module('<%= ngapp %>').run(['MenuService',
-  function (MenuService) {
-    MenuService.addMenu({
-      title: 'About',
-      state: 'about',
-    });
-  }
-]);
+    runBlock.$inject = ['MenuService'];
+
+    function runBlock(MenuService) {
+        MenuService.addMenu({
+            title: 'About',
+            state: 'about',
+        });
+    }
+})();

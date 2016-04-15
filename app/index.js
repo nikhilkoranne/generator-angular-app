@@ -122,6 +122,7 @@ module.exports = generators.Base.extend({
             bowerJson.dependencies['angular-bootstrap'] = '~0.13.4';
             bowerJson.dependencies['angular-ui-router'] = '~0.2.15';
             bowerJson.dependencies['bootstrap-css-only'] = '~3.3.5';
+            bowerJson.dependencies['angular-mocks'] = '~1.4.7';
             if (this.includeLodash) {
                 bowerJson.dependencies['lodash'] = '~3.10.1';
             }
@@ -172,7 +173,7 @@ module.exports = generators.Base.extend({
                 });
             this.fs.copyTpl(
                 this.templatePath('app/home/_home.config.js'),
-                this.destinationPath('src/client/app/features/home/home.config.js'),
+                this.destinationPath('src/client/app/features/home/config/home.config.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
@@ -184,19 +185,31 @@ module.exports = generators.Base.extend({
                 });
             this.fs.copyTpl(
                 this.templatePath('app/home/_routes.js'),
-                this.destinationPath('src/client/app/features/home/routes.js'),
+                this.destinationPath('src/client/app/features/home/config/routes.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/home/_home.unit.test.js'),
+                this.destinationPath('src/client/app/features/home/test/unit/home.unit.test.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
                 this.templatePath('app/about/_routes.js'),
-                this.destinationPath('src/client/app/features/about/routes.js'),
+                this.destinationPath('src/client/app/features/about/config/routes.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
                 this.templatePath('app/about/_about.config.js'),
-                this.destinationPath('src/client/app/features/about/about.config.js'),
+                this.destinationPath('src/client/app/features/about/config/about.config.js'),
+                {
+                    ngapp: this.config.get('ngappname')
+                });
+            this.fs.copyTpl(
+                this.templatePath('app/about/_about.unit.test.js'),
+                this.destinationPath('src/client/app/features/about/test/unit/about.unit.test.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
@@ -208,7 +221,7 @@ module.exports = generators.Base.extend({
                 });
             this.fs.copyTpl(
                 this.templatePath('app/login/_routes.js'),
-                this.destinationPath('src/client/app/features/login/routes.js'),
+                this.destinationPath('src/client/app/features/login/config/routes.js'),
                 {
                     ngapp: this.config.get('ngappname')
                 });
@@ -224,6 +237,7 @@ module.exports = generators.Base.extend({
                 {
                     ngapp: this.config.get('ngappname')
                 });
+            this.copy('_karma.conf.js', 'karma.conf.js');
             if (this.backendServer === 'NodeJS') {
                 this.fs.copyTpl(
                     this.templatePath('_server.js'),
