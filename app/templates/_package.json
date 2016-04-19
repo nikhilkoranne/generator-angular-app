@@ -4,7 +4,8 @@
     "description": "",
     "main": "src/server/server.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "postinstall":"./node_modules/.bin/webdriver-manager update"
     },
     "author": "Salauddin",
     "license": "ISC",
@@ -35,7 +36,10 @@
         "karma-jasmine": "^0.3.6",
         "karma-phantomjs-launcher": "^0.2.1",
         "phantomjs": "^1.9.18",
-        "protractor": "^2.5.1"
+        "gulp-uglify": "^1.4.2",
+        "protractor": "^2.5.1",
+        "gulp-angular-protractor": "0.0.6",
+        "gulp-protractor": "^1.0.0"
     },
     "devDependencies": {
         "istanbul": "^0.4.3"

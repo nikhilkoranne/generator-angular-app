@@ -121,6 +121,13 @@ module.exports = generators.Base.extend({
                     htmlTemplate: 'app/features/' + fileNameFragment + '/' + fileNameFragment + '.html',
                     controller: _.upperFirst(this.name + 'Controller')
                 });
+            this.fs.copyTpl(
+                this.templatePath('_e2e.test.js'),
+                this.destinationPath('src/client/app/features/' + fileNameFragment + '/test/e2e/' + fileNameFragment + '.e2e.spec.js'),
+                {
+                    pageName: this.config.get('ngappname'),
+                    url:this.routeUrl
+                });
         }
         if (this.routeConfirmation === 'Yes' && this.includeLink === 'Yes') {
             this.fs.copyTpl(

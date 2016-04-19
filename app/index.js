@@ -196,6 +196,9 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.fs.copyTpl(
+                this.templatePath('app/home/_home.e2e.test.js'),
+                this.destinationPath('src/client/app/features/home/test/e2e/home.e2e.spec.js'));
+            this.fs.copyTpl(
                 this.templatePath('app/about/_routes.js'),
                 this.destinationPath('src/client/app/features/about/config/routes.js'),
                 {
@@ -238,6 +241,7 @@ module.exports = generators.Base.extend({
                     ngapp: this.config.get('ngappname')
                 });
             this.copy('_karma.conf.js', 'karma.conf.js');
+            this.copy('_protractor-config.js', 'protractor-config.js');
             if (this.backendServer === 'NodeJS') {
                 this.fs.copyTpl(
                     this.templatePath('_server.js'),

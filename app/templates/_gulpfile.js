@@ -6,6 +6,7 @@ var config = require('./gulp.config')();
 var wiredep = require('wiredep');
 var livereload = require('gulp-livereload');
 var Server = require('karma').Server;
+var protractor = require('gulp-protractor').protractor;
 
 var paths = {
     appScripts: 'src/app/**/*.js'
@@ -38,6 +39,33 @@ gulp.task('watch', ['serve'], function () {
     });
 
     gulp.watch(paths.appScripts, ['scripts']);
+});
+gulp.task('server', function () {
+    log('Starting Server For e2e testing');
+    plugins.nodemon({
+        script: './src/server/server.js', ext: 'js html', env: { 'NODE_ENV': 'development' }
+        })
+        .on('restart', function () {
+            log('server restarted!');
+        });
+});
+gulp.task('e2e', ['server'], function () {
+    console.log('Starting e2e testing');
+    var args = ['--baseUrl', 'http://localhost:9001'];
+    gulp.src(['./src/client/app/features/**/*.e2e.spec.js'])
+        .pipe(protractor({
+            configFile: __dirname + '/protractor-config.js',
+            args: args,
+            keepAlive: true
+        }))
+        .on('end', function () {
+            log('E2E Testing complete');
+            process.exit();
+        })
+        .on('error', function (error) {
+            log('E2E Tests failed');
+            process.exit(1);
+        });
 });
 
 gulp.task('injectjs', function () {
